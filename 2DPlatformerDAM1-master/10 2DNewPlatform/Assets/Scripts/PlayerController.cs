@@ -7,7 +7,11 @@ public class PlayerController : MonoBehaviour
     public float speedX;
     public float jumpSpeedY;
 
+    int maxHealth = 100;
+    int currentHealth;
+    
     public GameObject leftBullet, rightBullet;
+    public HealthBar HealthBar;
 
     Transform firePos;
 
@@ -20,6 +24,8 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        currentHealth = maxHealth;
+        HealthBar.SetMaxHealth(maxHealth);
         Jumping = false;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
@@ -59,6 +65,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.L))
         {
             speed = 0;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            PlayerTakeDamage(10);
         }
 
         //jump player movement
@@ -169,6 +180,12 @@ public class PlayerController : MonoBehaviour
     public void Stop()
     {
         speed = 0;
+    }
+
+    public void PlayerTakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        HealthBar.SetHealth(currentHealth);
     }
 
 }
