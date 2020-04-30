@@ -9,11 +9,20 @@ public class EnemyController : MonoBehaviour
 
     bool facingRight;
 
+    int maxHealth = 100;
+    int currentHealth;
+
+    public int enemyAttackDamage = 20;
+
     public GameObject leftBullet, rightBullet;
+    public HealthBar healthBar;
+    //private GameObject enemyHealthBar;
+
 
     Transform firePos;
 
-    float targetTime;
+    int currentTime;
+    public int shootCooldown = 200;
 
     Rigidbody2D rb;
     Animator anim;
@@ -21,31 +30,26 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        targetTime = 60;
+        currentTime = 0;
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         anim.SetInteger("Status", 1);
         firePos = transform.Find("firePos");
-        Fire();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        MoveEnemy(speedX);
+        rb.velocity = new Vector3(speedX, rb.velocity.y, 0);
+        currentTime++;
 
-        /*targetTime -= Time.deltaTime;
-        if (targetTime >= 0.0f)
+        if (currentTime >= shootCooldown)
         {
             Fire();
+            currentTime = 0;
         }
-       */
-    }
-
-    void MoveEnemy(float enemySpeed)
-    {
-        rb.velocity = new Vector3(enemySpeed, rb.velocity.y, 0);
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -67,7 +71,6 @@ public class EnemyController : MonoBehaviour
             Vector3 temp = transform.localScale;
             temp.x *= -1;
             transform.localScale = temp;
-            Fire();
         }
         
     }
@@ -84,6 +87,16 @@ public class EnemyController : MonoBehaviour
             Instantiate(leftBullet, firePos.position, Quaternion.identity);
         }
 
+    }
+
+    public void EnemyTakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        healthBar.SetHealth(currentHealth);
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
 }

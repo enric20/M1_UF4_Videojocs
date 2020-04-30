@@ -7,12 +7,28 @@ public class BulletCrtl : MonoBehaviour
     public Vector2 speed;
 
     Rigidbody2D rb;
+    private EnemyController enemyController;
+    private PlayerController playerController;
+
+    private int playerAttackDamage;
+    private int enemyAttackDamage;
+
+    private GameObject enemy;
+    private GameObject player;
+
+    public int bulletDamage = 20;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        enemy = GameObject.FindGameObjectWithTag("enemy");
+        player = GameObject.FindGameObjectWithTag("Player");
+        enemyController = enemy.GetComponent<EnemyController>();
+        playerController = player.GetComponent<PlayerController>();
+
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = speed;
+
     }
 
     // Update is called once per frame
@@ -25,14 +41,17 @@ public class BulletCrtl : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("enemy"))
         {
-            Destroy(collision.gameObject);
             Destroy(gameObject);
+            enemyController.EnemyTakeDamage(bulletDamage);
+            //Destroy(collision.gameObject);
+            
         }
 
         else if (collision.gameObject.CompareTag("Player"))
         {
-            Destroy(collision.gameObject);
             Destroy(gameObject);
+            playerController.PlayerTakeDamage(bulletDamage);
+            
         }
 
         else
