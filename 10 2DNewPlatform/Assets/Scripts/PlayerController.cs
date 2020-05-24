@@ -1,20 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     public float speedX;
     public float jumpSpeedY;
     public int gold = 0;
-
+    //Array de declaració d'armes       //0        1       2        3          4        5           6                 7
     private string[] currentWeapon = { "None", "Pistol", "SMG" , "Shotgun", "Rifle", "Sniper", "Rocket_Launcher", "Minigun"};
-    private bool[] weaponUnlocked = { true, true, true, true, true, true, false, false};
-    public int currentWeaponInt = 0;
-
+    //Array de declaració d'armes disponibles
+    private bool[] weaponUnlocked = { true, false, false, false, false, false, false, false};
+    public int currentWeaponInt = 0; //Punter que indica l'arma usada actualment
+    //HP
     int maxHealth = 100;
     int currentHealth;
-
+    //Cooldowns
     int currentShootTime;
     int currentRechargeTime;
     public int shootCooldown;
@@ -24,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     //Ammo
     private int pistolBullets = 7; //ammunition (before)
-    public int pistolMaxBullets = 7; //maxAmmunition (before)
+    public int pistolMaxBullets = 7; //maxAmmunition (after)
 
     private int smgBullets = 20;
     private int smgMaxBullets = 20;
@@ -44,8 +46,9 @@ public class PlayerController : MonoBehaviour
     public int rifleAmmoCapacity = 40;
     public int sniperAmmoCapacity = 10;
     
-    public int playerAttackDamage = 10;
+    //public int playerAttackDamage = 10;
 
+    //Diferents bales
     public GameObject leftBullet, rightBullet; //Pistol, SMG
     public GameObject leftPellet, rightPellet; //Shotgun
     public GameObject leftRifleBullet, rightRifleBullet; //Rifle
@@ -53,13 +56,14 @@ public class PlayerController : MonoBehaviour
 
     private GameObject chestTag;
 
+    //Acces a scripts
     private Chest chest;
-
     public HealthBar healthBar;
     public RealoadBar reloadBar;
     public ShowGold showGold;
     public WeaponsUI weaponsUI;
 
+    //Posicions de dispar
     Transform firePos;
     Transform firePosUp;
     Transform firePosDown;
@@ -70,7 +74,6 @@ public class PlayerController : MonoBehaviour
     //Pistol Audios
     public AudioSource firePistolAudio;
     public AudioSource rechargePistolAudio;
-
     //SMG Audios
     public AudioSource fireSMGAudio;
     public AudioSource reloadSMGAudio;
@@ -91,7 +94,7 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        PlayerWeaponUnlock(1);
+        
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
         reloadBar.SetMaxReloadCD(rechargeCooldown);
@@ -105,16 +108,21 @@ public class PlayerController : MonoBehaviour
 
         reloadBar.SetMaxAmmunition(pistolMaxBullets, smgMaxBullets, maxShells, rifleMaxBullets, sniperMaxBullets);
         reloadBar.SetAmmoCapacity(nineMMAmmoCapacity, shellAmmoCapacity, rifleAmmoCapacity, sniperAmmoCapacity);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        MovePlayer(speed);
-        Flip();
+        MovePlayer(speed); //Moviment del jugador
+        Flip(); //Mirar la posicio actual del personatge
         WeaponController(); //Weapon cooldowns
         WeaponRecharge(); //Weapon cooldowns recharge
 
+        /*if (!weaponUnlocked[1])
+        {
+            PlayerWeaponUnlock(1);
+        }*/
         //left player movement
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -156,7 +164,7 @@ public class PlayerController : MonoBehaviour
         {
             //reloading = false; //Posa "false" per evitar bug pero buguejar so
             //reloadBar.SetReloadCD(rechargeCooldown);
-            switch (currentWeapon[currentWeaponInt])
+            switch (currentWeapon[currentWeaponInt]) //Segons el tipus d'arma que tens executara un dispar diferent
             {
                 case "Pistol":
                     Fire(leftBullet, rightBullet, pistolBullets, 1); //GameObject left shoot, right shoot, ammoType, currentWeaponInt
@@ -165,7 +173,7 @@ public class PlayerController : MonoBehaviour
                     Fire(leftBullet, rightBullet, smgBullets, 2);
                     break;
                 case "Shotgun":
-                    FirePellet(leftPellet, rightPellet);
+                    FirePellet(leftPellet, rightPellet); //Funcio per escopeta dispara 3 perdigons
                     break;
                 case "Rifle":
                     Fire(leftRifleBullet, rightRifleBullet, rifleBullets, 4);
@@ -291,7 +299,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void MovePlayer(float playerSpeed)
+    void MovePlayer(float playerSpeed) //Moviment del jugador
     {
         if (playerSpeed < 0 && !Jumping || playerSpeed > 0 && !Jumping)
         {
@@ -306,17 +314,18 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector3(speed, rb.velocity.y, 0);
     }
 
-    void OnCollisionEnter2D(Collision2D other)
+    void OnCollisionEnter2D(Collision2D other) //Saltar
     {
         if (other.gameObject.tag == "GROUND")
         {
             Jumping = false;
             anim.SetInteger("Status", 0);
         }
+
     }
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision) //Recollir objectes
     {
 
         if (collision.gameObject.tag == "Coin")
@@ -325,15 +334,128 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
-        if (collision.gameObject.tag == "Chest")
+        else if (collision.gameObject.tag == "Chest")
         {
             chestTag = GameObject.FindGameObjectWithTag("Chest");
             chest = chestTag.GetComponent<Chest>();
+            //PlayerAddGold(50);
             PlayerAddGold(chest.chestCoins);
+            
         }
+        //Munició:
+
+        else if (collision.gameObject.tag == "Lava")
+        {
+            PlayerTakeDamage(200);
+            healthBar.SetMaxHealth(maxHealth);
+            healthBar.SetHealth(currentHealth);
+        }
+
+        else if (collision.gameObject.tag == "DeathZone")
+        {
+            Death();
+        }
+
+        else if (collision.gameObject.tag == "9mmAmmoBox")
+        {
+            nineMMAmmoCapacity = nineMMAmmoCapacity + 10;
+            Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "shellsAmmoBox")
+        {
+            shellAmmoCapacity = shellAmmoCapacity + 5;
+            Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "rifleAmmoBox")
+        {
+            rifleAmmoCapacity = rifleAmmoCapacity + 10;
+            Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "sniperAmmoBox")
+        {
+            sniperAmmoCapacity = sniperAmmoCapacity + 3;
+            Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "medikit") //Recollir vida
+        {
+            bool canGetHealth = true;
+            if (currentHealth >= maxHealth)
+            {
+                canGetHealth = false;
+            }
+
+            if (canGetHealth)
+            {
+                if ((currentHealth+50) >= 100) //No pasara de 100 de vida
+                {
+                    currentHealth = 100;
+                }
+                else
+                {
+                    currentHealth = currentHealth + 50;
+                }
+                healthBar.SetMaxHealth(maxHealth);
+                healthBar.SetHealth(currentHealth);
+                Destroy(collision.gameObject);
+            }
+            
+        }
+
+        else if (collision.gameObject.tag == "CLEARSKY")
+        {
+            print("CLEARSKY");
+            GameObject tag;
+            BackgroundChange script;
+            tag = GameObject.FindGameObjectWithTag("MainCamera");
+            script = tag.GetComponent<BackgroundChange>();
+            script.ChangeSky(1);
+            //Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "SKYCITY")
+        {
+            print("SKYCITY");
+            GameObject tag;
+            BackgroundChange script;
+            tag = GameObject.FindGameObjectWithTag("MainCamera");
+            script = tag.GetComponent<BackgroundChange>();
+            script.ChangeSky(2);
+            //Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "NIGHTSKY")
+        {
+            print("NOBACKGROUND");
+            GameObject tag;
+            BackgroundChange script;
+            tag = GameObject.FindGameObjectWithTag("MainCamera");
+            script = tag.GetComponent<BackgroundChange>();
+            script.ChangeSky(3); //0 Deletes background
+            //Destroy(collision.gameObject);
+        }
+
+        else if (collision.gameObject.tag == "NOBACKGROUND")
+        {
+            print("NOBACKGROUND");
+            GameObject tag;
+            BackgroundChange script;
+            tag = GameObject.FindGameObjectWithTag("MainCamera");
+            script = tag.GetComponent<BackgroundChange>();
+            script.ChangeSky(0); //0 Deletes background
+            //Destroy(collision.gameObject);
+        }
+
+        
+
+
+        reloadBar.SetAmmoCapacity(nineMMAmmoCapacity, shellAmmoCapacity, rifleAmmoCapacity, sniperAmmoCapacity);
     }
 
-    void Flip()
+    void Flip() //Girar el jugador segons la velocitat
     {
         // code for change direction of the player
         if (speed < 0 && !facingRight || speed > 0 && facingRight)
@@ -346,7 +468,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void FireButton()
+    public void FireButton() //Disparar amb botons
     {
         Fire(leftBullet, rightBullet, pistolBullets, 1);
     }
@@ -429,7 +551,7 @@ public class PlayerController : MonoBehaviour
         if (bulletReady && shells > 0 && !reloading && currentWeapon[currentWeaponInt] == "Shotgun")
         {
             fireShotgunAudio.Play();
-            if (!facingRight)
+            if (!facingRight) //Initialitza 3 bales
             {
                 Instantiate(rightPellet, firePos.position, Quaternion.identity);
                 Instantiate(rightPellet, firePosDown.position, Quaternion.identity);
@@ -475,17 +597,30 @@ public class PlayerController : MonoBehaviour
         speed = 0;
     }
 
-    public void PlayerTakeDamage(int damage)
+    public void PlayerTakeDamage(int damage) //S'activa a través dels scripts dels enemics
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            Death();
         }
     }
 
-    public void PlayerUseAmmo(int ammoUsed, int currentWeapon)
+    public void Death()
+    {
+        StartCoroutine(LoadLevel());
+    }
+
+    IEnumerator LoadLevel()
+    {
+        yield return new WaitForSeconds(1.0f);
+        SceneManager.LoadScene("GameOver");
+        Destroy(gameObject);
+
+    }
+
+    public void PlayerUseAmmo(int ammoUsed, int currentWeapon) //Funcio per actualitzar munició
     {
         switch (currentWeapon)
         {
@@ -514,14 +649,14 @@ public class PlayerController : MonoBehaviour
        
     }
 
-    public void WeaponRecharge()
+    public void WeaponRecharge() //S'utilitza per a mirar les diferents variables i verifica si es pot o no recarregar, aquesta funcio s'executa en el update, ja que utilitza cooldowns
     {
         switch (currentWeapon[currentWeaponInt])
         {
-            case "Pistol": //1
+            case "Pistol": //1 Recarrega Pistola
                 if (currentRechargeTime < rechargeCooldown && reloading && pistolBullets < pistolMaxBullets && nineMMAmmoCapacity >= 1)
                 {
-                    if(currentRechargeTime == 1)
+                    if(currentRechargeTime == 1) //Activa el so de la recarrega en el moment que el cooldown es 1, per a que no s'executi varies vegades
                     {
                         rechargePistolAudio.Play();
                     }
@@ -531,13 +666,12 @@ public class PlayerController : MonoBehaviour
 
                 else if (currentRechargeTime >= rechargeCooldown && reloading) //Finish recharge, load bullets
                 {
-                    
                     PlayerAmmoUpdate();
                 }
 
                 break;
 
-            case "SMG":
+            case "SMG": //2 Recarrega SMG
                 if (currentRechargeTime < rechargeCooldown && reloading && smgBullets < smgMaxBullets && nineMMAmmoCapacity >= 1)
                 {
                     if (currentRechargeTime == 1)
@@ -554,7 +688,7 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
 
-            case "Shotgun": //3
+            case "Shotgun": //3 Recarrega Escopeta
                 if (currentRechargeTime < rechargeCooldown && reloading && shells < maxShells && shellAmmoCapacity >= 1)
                 {
                     if (currentRechargeTime == 1)
@@ -571,7 +705,7 @@ public class PlayerController : MonoBehaviour
                     PlayerAmmoUpdate();
                 }
                 break;
-            case "Rifle": //3
+            case "Rifle": //4 Recarrega Rifle
                 if (currentRechargeTime < rechargeCooldown && reloading && rifleBullets < rifleMaxBullets && rifleAmmoCapacity >= 1)
                 {
                     if (currentRechargeTime == 1)
@@ -588,7 +722,7 @@ public class PlayerController : MonoBehaviour
                     PlayerAmmoUpdate();
                 }
                 break;
-            case "Sniper": //3
+            case "Sniper": //5 Recarrega franctirador
                 if (currentRechargeTime < rechargeCooldown && reloading && sniperBullets < sniperMaxBullets && sniperAmmoCapacity >= 1)
                 {
                     if (currentRechargeTime == 1)
@@ -609,7 +743,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    public void PlayerAmmoUpdate() //2 nivell de WeaponRecharge
+    public void PlayerAmmoUpdate() //Segons nivell de WeaponRecharge, actualitza la munició actual, fa servir la funcio AmmoReloaderFunction per a que la municio actual i la capacitat de municio s'actualitzin correctament
     {
         switch (currentWeapon[currentWeaponInt])
         {
@@ -632,19 +766,19 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         reloading = false;
-        PlayerUseAmmo(0, currentWeaponInt);
-        reloadBar.SetAmmoCapacity(nineMMAmmoCapacity, shellAmmoCapacity, rifleAmmoCapacity, sniperAmmoCapacity);
+        PlayerUseAmmo(0, currentWeaponInt); //Actualitza la municio en la UI
+        reloadBar.SetAmmoCapacity(nineMMAmmoCapacity, shellAmmoCapacity, rifleAmmoCapacity, sniperAmmoCapacity); //Actualitza la capacitat de munició
 
     }
 
-    private void PlayerAddGold(int newGold)
+    private void PlayerAddGold(int newGold) //Funcio per afegir OR a la variable i mostrarla a la UI
     {
         gold = gold + newGold;
         showGold.SetGold(gold);
         showGold.GoldNotification(newGold);
     }
 
-    public void WeaponController()
+    public void WeaponController() //Mira el cooldown del dispar del arma, es podria eliminar el switch, pero d'aquesta forma permet afegir sons entre l'enfredament del arma i altres coses.
     {
         switch (currentWeapon[currentWeaponInt])
         {
@@ -714,14 +848,14 @@ public class PlayerController : MonoBehaviour
        
     }
 
-    public void WeaponSelector() //Canviar coldowns de les armes, temps de recarrega, bales maximes...
+    public void WeaponSelector() //Canviar cooldowns de les armes, temps de recarrega, bales maximes... S'executa cada vegada que cambiem d'arma (utilitzem tecles 0 a 5)
     {
-        switch (currentWeapon[currentWeaponInt])
+        switch (currentWeapon[currentWeaponInt]) //Canvia el cooldown general, ho he fet aixi per estalviar crear variables de més.
         {
             case "Pistol": //1
-                shootCooldown = 70; //70
-                pistolMaxBullets = 7;
-                rechargeCooldown = 270; //300
+                shootCooldown = 70; //Temps entre dispar
+                pistolMaxBullets = 7; //Bales maximes
+                rechargeCooldown = 270; //Temps de recarrega
                 break;
 
             case "SMG":
@@ -746,22 +880,22 @@ public class PlayerController : MonoBehaviour
                 rechargeCooldown = 350;
                 break;
         }
-        reloading = false;
+        reloading = false; //Canvia l'estat de la recarrega a false, si el jugador cambia d'arma mentres recarrega es cancela la recarrega
         currentRechargeTime = rechargeCooldown;
         currentShootTime = 0; //Canvia a 0 per a que hi hagi un CD al canviar d'arma
-        reloadBar.SetMaxReloadCD(rechargeCooldown);
-        reloadBar.SetReloadCD(rechargeCooldown);
+        reloadBar.SetMaxReloadCD(rechargeCooldown); //Actualitza UI barra recarrega
+        reloadBar.SetReloadCD(rechargeCooldown); //Actualitza UI barra recarrega
         weaponsUI.SetCurrentWeaponUI(currentWeaponInt); //Cambia la UI per a establir l'arma actual
         weaponsUI.SetAvailableWeaponsUI(weaponUnlocked); //Pasar l'array per a que no mostri les armes que no estan disponibles
 
-        rechargePistolAudio.Stop();
+        rechargePistolAudio.Stop(); //Evita que l'audio es quedi trabat mentres es canvia d'arma
         reloadSMGAudio.Stop();
         reloadShotgunAudio.Stop();
         reloadRifleAudio.Stop();
         reloadSniperAudio.Stop();
     }
 
-    private int AmmoReloaderFunction(int currentAmmo, int maxAmmo, int ammoCapacity, int weaponType)
+    private int AmmoReloaderFunction(int currentAmmo, int maxAmmo, int ammoCapacity, int weaponType) //La funcio definitiva per a actualitzar la municio actual i la capacitat de munició
     {
         if (maxAmmo > ammoCapacity)
         {
@@ -785,7 +919,7 @@ public class PlayerController : MonoBehaviour
             currentAmmo = maxAmmo;
         }
        
-        switch (weaponType)
+        switch (weaponType) //Actualitza la munició actual del arma
         {
             case 1:
                 pistolBullets = currentAmmo;
@@ -806,12 +940,13 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         reloadBar.SetAmmunition(currentAmmo, currentWeaponInt);
-        return ammoCapacity;
+        return ammoCapacity; //Retorna la capacitat de munició
     }
 
-    private void PlayerWeaponUnlock(int unlockedWeapon)
+    public void PlayerWeaponUnlock(int unlockedWeapon) //Desbloqueja armes i les mostra en la interfície
     {
         weaponUnlocked[unlockedWeapon] = true;
         weaponsUI.SetAvailableWeaponsUI(weaponUnlocked); //Pasar l'array per a que miri les armes disponibles
     }
+
 }

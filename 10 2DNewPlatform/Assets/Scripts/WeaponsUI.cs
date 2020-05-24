@@ -31,11 +31,11 @@ public class WeaponsUI : MonoBehaviour
         DebugUI();
     }
 
-    public void SetCurrentWeaponUI(int currentWeaponLocal)
+    public void SetCurrentWeaponUI(int currentWeaponLocal) //Estableix l'arma utilitzada actualment, la mostrara en la interfície amb més brillantor
     {
-        DebugUI();
+        DebugUI(); //S'utilitza per a establir totes les armes com a no usades
         currentWeapon = currentWeaponLocal;
-        switch (currentWeaponLocal)
+        switch (currentWeaponLocal) //Estableix l'arma usada
         {
             case 1:
                 pistolUI.color = usingWeapon;
@@ -55,44 +55,42 @@ public class WeaponsUI : MonoBehaviour
         }
     }
 
-    public void SetAvailableWeaponsUI(bool[] availableWeaponsArray)
+    public void SetAvailableWeaponsUI(bool[] availableWeaponsArray) //Estableix les armes NO DISPONIBLES, no les mostrara
     {
+        //DebugUI();
         for (int i = 0; i < availableWeaponsArray.Length; i++)
         {
-            if (!availableWeaponsArray[i])
+            if (availableWeaponsArray[i])
             {
                 switch (i)
                 {
                     case 1:
-                        //pistolUI.color = unavailableWeapon;
-                        pistol.SetActive(false);
+                        pistol.SetActive(true);
                         break;
                     case 2:
-                        smg.SetActive(false);
-                        //smgUI.color = unavailableWeapon;
+                        smg.SetActive(true);
                         break;
                     case 3:
-                        shotgun.SetActive(false);
-                        //shotgunUI.color = unavailableWeapon;
+                        shotgun.SetActive(true);
                         break;
                     case 4:
-                        rifle.SetActive(false);
+                        rifle.SetActive(true);
                         break;
                     case 5:
-                        sniper.SetActive(false);
+                        sniper.SetActive(true);
                         break;
                 }
             }
         }
     }
 
-    private void DebugUI()
+    private void DebugUI() //Utilitza aquesta funcio al principi del joc per a arreglar la UI
     {
-        pistol.SetActive(true);
-        smg.SetActive(true);
-        shotgun.SetActive(true);
-        rifle.SetActive(true);
-        sniper.SetActive(true);
+        pistol.SetActive(false);
+        smg.SetActive(false);
+        shotgun.SetActive(false);
+        rifle.SetActive(false);
+        sniper.SetActive(false);
 
         pistolUI.color = notUsingWeapon;
         smgUI.color = notUsingWeapon;

@@ -1,17 +1,20 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - BackgroundChange
     - BulletCrtl
     - CameraController
     - Chest
     - DestroyWithDelay
     - EnemyController
+    - Head_Boss_Script
     - HealthBar
     - HealthBarEnemy
     - PlayerController
     - RealoadBar
     - SceneLoader
     - ShowGold
+    - UnmobileEnemy
     - WeaponsUI
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
@@ -50,11 +53,19 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 21
       Script: {instanceID: 0}
+    - Class: 23
+      Script: {instanceID: 0}
     - Class: 28
+      Script: {instanceID: 0}
+    - Class: 33
+      Script: {instanceID: 0}
+    - Class: 43
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
     - Class: 50
+      Script: {instanceID: 0}
+    - Class: 58
       Script: {instanceID: 0}
     - Class: 61
       Script: {instanceID: 0}
@@ -93,33 +104,39 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9942}
     - Class: 114
-      Script: {instanceID: 9994}
+      Script: {instanceID: 9954}
     - Class: 114
-      Script: {instanceID: 10280}
+      Script: {instanceID: 9996}
     - Class: 114
-      Script: {instanceID: 10574}
+      Script: {instanceID: 10282}
     - Class: 114
-      Script: {instanceID: 10648}
+      Script: {instanceID: 10576}
     - Class: 114
-      Script: {instanceID: 10690}
+      Script: {instanceID: 10650}
     - Class: 114
-      Script: {instanceID: 10696}
+      Script: {instanceID: 10692}
     - Class: 114
-      Script: {instanceID: 10806}
+      Script: {instanceID: 10698}
     - Class: 114
-      Script: {instanceID: 11016}
+      Script: {instanceID: 10808}
     - Class: 114
-      Script: {instanceID: 11038}
+      Script: {instanceID: 11018}
     - Class: 114
-      Script: {instanceID: 11052}
+      Script: {instanceID: 11040}
     - Class: 114
-      Script: {instanceID: 11136}
+      Script: {instanceID: 11054}
     - Class: 114
-      Script: {instanceID: 11472}
+      Script: {instanceID: 11138}
     - Class: 114
-      Script: {instanceID: 11506}
+      Script: {instanceID: 11450}
     - Class: 114
-      Script: {instanceID: 11540}
+      Script: {instanceID: 11476}
+    - Class: 114
+      Script: {instanceID: 11510}
+    - Class: 114
+      Script: {instanceID: 11544}
+    - Class: 114
+      Script: {instanceID: 99336}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 124
@@ -143,6 +160,116 @@ ScriptsOnlyBuild:
     - Class: 483693784
       Script: {instanceID: 0}
     - Class: 1839735485
+      Script: {instanceID: 0}
+    Assets/Scenes/GameEnd.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9670}
+    - Class: 114
+      Script: {instanceID: 9836}
+    - Class: 114
+      Script: {instanceID: 9878}
+    - Class: 114
+      Script: {instanceID: 10282}
+    - Class: 114
+      Script: {instanceID: 10650}
+    - Class: 114
+      Script: {instanceID: 11040}
+    - Class: 114
+      Script: {instanceID: 11138}
+    - Class: 114
+      Script: {instanceID: 11510}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/GameOver.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9670}
+    - Class: 114
+      Script: {instanceID: 9836}
+    - Class: 114
+      Script: {instanceID: 9878}
+    - Class: 114
+      Script: {instanceID: 10282}
+    - Class: 114
+      Script: {instanceID: 10650}
+    - Class: 114
+      Script: {instanceID: 11040}
+    - Class: 114
+      Script: {instanceID: 11138}
+    - Class: 114
+      Script: {instanceID: 11510}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
     Assets/Scenes/HomeScene.unity:
     - Class: 1
@@ -168,15 +295,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9878}
     - Class: 114
-      Script: {instanceID: 10280}
+      Script: {instanceID: 10282}
     - Class: 114
-      Script: {instanceID: 10648}
+      Script: {instanceID: 10650}
     - Class: 114
-      Script: {instanceID: 11038}
+      Script: {instanceID: 11040}
     - Class: 114
-      Script: {instanceID: 11136}
+      Script: {instanceID: 11138}
     - Class: 114
-      Script: {instanceID: 11506}
+      Script: {instanceID: 11510}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -238,7 +365,7 @@ ScriptsOnlyBuild:
     className: GroupTrack
   - hash:
       serializedVersion: 2
-      Hash: a3f761156773af863ddca02099f920e4
+      Hash: c45b1bf580491193fff07b432bb54c8b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Chest
@@ -310,6 +437,12 @@ ScriptsOnlyBuild:
     className: EnemyController
   - hash:
       serializedVersion: 2
+      Hash: ae075a62d8eb7d2a4d4c4a1280d263cc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UnmobileEnemy
+  - hash:
+      serializedVersion: 2
       Hash: 8aa3d6ccbcb54ee8db6c1229854adaaa
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -322,7 +455,7 @@ ScriptsOnlyBuild:
     className: SignalAsset
   - hash:
       serializedVersion: 2
-      Hash: 2f480a43d0a3fd0a15da86e320e82ce4
+      Hash: 5849a943025010b968b62e48db306c6f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BulletCrtl
@@ -466,7 +599,7 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
-      Hash: b26cf8e01ab9253ac57a0bc5580da753
+      Hash: 3ba7e6460e114a18eeff4ab43e4f4b61
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerController
@@ -622,6 +755,12 @@ ScriptsOnlyBuild:
     className: BaseInput
   - hash:
       serializedVersion: 2
+      Hash: ed54c6962bd7a1c1611ce0ef1e038add
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BackgroundChange
+  - hash:
+      serializedVersion: 2
       Hash: caa533b001ae39b864ba8425019e2268
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -686,8 +825,16 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: af3fedd9485b2bdb71cbbf0da5876be4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Head_Boss_Script
   platform: 19
   scenePathNames:
   - Assets/Scenes/HomeScene.unity
   - Assets/Scenes/Demo.unity
+  - Assets/Scenes/GameOver.unity
+  - Assets/Scenes/GameEnd.unity
   playerPath: D:/Unity Data/Executables/10 2DNewPlatform.exe

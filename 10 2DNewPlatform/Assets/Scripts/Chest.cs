@@ -7,6 +7,7 @@ public class Chest : MonoBehaviour
     private string[] chestRarity = {"Common", "Uncommon", "Rare", "Legendary"};
     public int chestRarityPointer = 0;
     public int chestCoins = 25;
+    public int weaponUnlock = 0;
     Animator anim;
 
     public void Start()
@@ -36,8 +37,16 @@ public class Chest : MonoBehaviour
         {
             Debug.Log("Opening Chest");
             anim.SetInteger("Baul", 1);
+            UnlockWeapon();
         }
+    }
 
-
+    private void UnlockWeapon()
+    {
+        GameObject tag;
+        PlayerController script;
+        tag = GameObject.FindGameObjectWithTag("Player");
+        script = tag.GetComponent<PlayerController>();
+        script.PlayerWeaponUnlock(weaponUnlock);
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -7102155593288603434}
   m_Layer: 0
   m_Name: 5-rightSniperBullet
-  m_TagString: Untagged
+  m_TagString: bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: {x: 20, y: 0}
+  canDamageEnemy: 1
   bulletDamage: 200
   penetration: 3
 --- !u!114 &5471857314504980420
@@ -132,7 +133,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 6
 --- !u!61 &-7102155593288603434
 BoxCollider2D:
   m_ObjectHideFlags: 0

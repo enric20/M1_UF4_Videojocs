@@ -7,26 +7,19 @@ public class BulletCrtl : MonoBehaviour
     public Vector2 speed;
 
     Rigidbody2D rb;
-    private EnemyController enemyController;
-    private PlayerController playerController;
 
     private int playerAttackDamage;
     private int enemyAttackDamage;
 
-    private GameObject enemy;
-    private GameObject player;
+    public bool canDamageEnemy = false;
 
     public int bulletDamage = 20;
-    public int penetration = 1; //Pot penetrar 1 objecte
-    private int bulletPentratedStructures = 0;
+    public int penetration = 0; //Pot penetrar 1 objecte
+    private int bulletPenetratedStructures = 0;
 
     // Start is called before the first frame update
     void Awake()
     {
-        enemy = GameObject.FindGameObjectWithTag("enemy");
-        player = GameObject.FindGameObjectWithTag("Player");
-        enemyController = enemy.GetComponent<EnemyController>();
-        playerController = player.GetComponent<PlayerController>();
 
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = speed;
@@ -41,34 +34,72 @@ public class BulletCrtl : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("enemy"))
+        if (collision.gameObject.CompareTag("unmobileEnemy"))
         {
-            Destroy(gameObject);
-            enemyController.EnemyTakeDamage(bulletDamage);
-            //Destroy(collision.gameObject);
+            if (canDamageEnemy)
+            {
+                UnmobileEnemy unmobileEnemy;
+                GameObject unmobileEnemyGO;
+                unmobileEnemyGO = GameObject.FindGameObjectWithTag("unmobileEnemy");
+                unmobileEnemy = unmobileEnemyGO.GetComponent<UnmobileEnemy>();
+                Destroy(gameObject);
+                unmobileEnemy.UnmobileEnemyTakeDamage(bulletDamage);
+            }
+        }
 
+        else if (collision.gameObject.CompareTag("mobileEnemy"))
+        {
+            if (canDamageEnemy)
+            {
+                EnemyController enemyController;
+                GameObject mobileEnemy;
+                mobileEnemy = GameObject.FindGameObjectWithTag("mobileEnemy");
+                enemyController = mobileEnemy.GetComponent<EnemyController>();
+                Destroy(gameObject);
+                enemyController.EnemyTakeDamage(bulletDamage);
+            }
+        }
+
+        else if (collision.gameObject.CompareTag("boss"))
+        {
+            if (canDamageEnemy)
+            {
+                Head_Boss_Script head_Boss_Script;
+                GameObject boss;
+                boss = GameObject.FindGameObjectWithTag("boss");
+                head_Boss_Script = boss.GetComponent<Head_Boss_Script>();
+                Destroy(gameObject);
+                head_Boss_Script.UnmobileEnemyTakeDamage(bulletDamage);
+            }
         }
 
         else if (collision.gameObject.CompareTag("Player"))
         {
-
+            PlayerController playerController;
+            GameObject player;
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerController = player.GetComponent<PlayerController>();
             Destroy(gameObject);
             playerController.PlayerTakeDamage(bulletDamage);
-
         }
 
-        else
-        {
-            if (bulletPentratedStructures >= penetration)
+       else if (collision.gameObject.CompareTag("bullet"))
+       {
+            if (bulletPenetratedStructures >= penetration)
             {
                 Destroy(gameObject);
             }
             else
             {
-                bulletPentratedStructures++;
-                OnCollisionEnter2D(collision);
+                bulletPenetratedStructures++;
+                Destroy(collision.gameObject);
+                //OnCollisionEnter2D(collision);
             }
-            
-        }
+       }
+
+       else
+       {
+            Destroy(gameObject);
+       }
     }
 }

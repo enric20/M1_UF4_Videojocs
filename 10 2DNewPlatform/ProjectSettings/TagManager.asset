@@ -10,6 +10,21 @@ TagManager:
   - WALL
   - enemyHealthBar
   - Chest
+  - medikit
+  - 9mmAmmoBox
+  - rifleAmmoBox
+  - shellsAmmoBox
+  - sniperAmmoBox
+  - bullet
+  - mobileEnemy
+  - unmobileEnemy
+  - SKYCITY
+  - CLEARSKY
+  - DeathZone
+  - NOBACKGROUND
+  - Lava
+  - NIGHTSKY
+  - boss
   layers:
   - Default
   - TransparentFX

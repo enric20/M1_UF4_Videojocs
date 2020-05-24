@@ -37,6 +37,7 @@ public class EnemyController : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.SetInteger("Status", 1);
         firePos = transform.Find("firePos");
+
     }
 
     // Update is called once per frame
